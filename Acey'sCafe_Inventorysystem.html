@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#17483a">
+<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
+<title>Acey's Resto Cafe – Inventory</title>
+<style>
+:root{--bg:#f2f4f0;--card:#fff;--ink:#1c2a25;--mute:#5d6b65;--line:#d9dfd9;--brand:#17483a;--brand2:#e4efe9;--ok:#2b7a4b;--low:#a86a00;--crit:#c2410c;--out:#b42318;font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif}
+@media(prefers-color-scheme:dark){:root{--bg:#141a17;--card:#1d2622;--ink:#e6ede9;--mute:#9aa8a1;--line:#33423b;--brand:#5fb592;--brand2:#243630;--ok:#5fc08a;--low:#e0a43c;--crit:#f08a5d;--out:#f27a6e}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.45}
+header{background:var(--brand);color:#fff;padding:12px 16px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+@media(prefers-color-scheme:dark){header{background:#10211a}}
+header h1{margin:0;font-size:19px;font-family:Georgia,serif}header span{opacity:.8;font-size:13px}
+nav{display:flex;gap:4px;overflow-x:auto;background:var(--card);border-bottom:1px solid var(--line);padding:6px 10px;position:sticky;top:0;z-index:5}
+nav button{border:0;background:none;padding:8px 12px;border-radius:6px;color:var(--mute);font:inherit;font-weight:600;cursor:pointer;white-space:nowrap}
+nav button.on{background:var(--brand2);color:var(--brand)}
+main{max-width:1050px;margin:0 auto;padding:16px}
+h2{font-family:Georgia,serif;margin:4px 0 12px;font-size:22px}h3{margin:18px 0 8px;font-size:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px;margin-bottom:14px}
+.grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.stat{border-left:5px solid var(--line);padding:6px 12px;background:var(--card);border-radius:4px;cursor:pointer;border:1px solid var(--line);border-left-width:5px}
+.stat b{display:block;font-size:26px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:end;margin-bottom:10px}
+label{display:flex;flex-direction:column;font-size:13px;color:var(--mute);gap:3px;font-weight:600}
+input,select,textarea{font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);min-width:0}
+input:focus,select:focus,button:focus-visible,textarea:focus{outline:2px solid var(--brand);outline-offset:1px}
+button.b{font:inherit;font-weight:600;padding:8px 14px;border-radius:6px;border:1px solid var(--brand);background:var(--brand);color:#fff;cursor:pointer}
+@media(prefers-color-scheme:dark){button.b{color:#10211a}}
+button.b.s{background:none;color:var(--brand)}button.b.d{background:none;color:var(--out);border-color:var(--out)}button.b.sm{padding:4px 9px;font-size:13px}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}.tw table:not(.rt) td:first-child,.tw table:not(.rt) th:first-child{position:sticky;left:0;background:var(--card)}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:middle}th{font-size:13px;color:var(--mute)}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+.tag{font-size:12px;font-weight:700;padding:2px 8px;border-radius:99px;border:1.5px solid;white-space:nowrap}
+.Available{color:var(--ok)}.Low{color:var(--low)}.Critical{color:var(--crit)}.Out{color:var(--out)}
+.mute{color:var(--mute);font-size:13px}.two{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.done{text-decoration:line-through;opacity:.55}.bad{color:var(--out);font-weight:700}
+dialog{border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);max-width:420px;width:92%}
+#toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:6px;display:none;z-index:9}
+pre{white-space:pre-wrap;background:var(--bg);padding:10px;border-radius:6px;border:1px solid var(--line)}
+
+html{-webkit-text-size-adjust:100%}body{padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}
+button,select{-webkit-appearance:none;appearance:none}select{padding-right:26px;background-image:linear-gradient(45deg,transparent 50%,var(--mute) 50%),linear-gradient(135deg,var(--mute) 50%,transparent 50%);background-position:calc(100% - 15px) 55%,calc(100% - 10px) 55%;background-size:5px 5px;background-repeat:no-repeat}
+nav button i{display:none;font-style:normal}
+.rt td:not([data-label])::before,.rt td[data-label=""]::before{display:none}
+@media(min-width:1100px){main{max-width:1200px}}
+@media(pointer:coarse){button.b{min-height:44px}button.b.sm{min-height:40px}input:not([type=checkbox]),select{min-height:44px}input[type=checkbox]{width:22px;height:22px}nav button{min-height:44px}}
+@media(max-width:700px){
+body{padding-bottom:calc(70px + env(safe-area-inset-bottom));font-size:16px}
+header{padding:10px 14px;padding-top:calc(10px + env(safe-area-inset-top))}header h1{font-size:18px}header span{font-size:12px}
+main{padding:12px}h2{font-size:20px}
+nav{position:fixed;top:auto;bottom:0;left:0;right:0;border-top:1px solid var(--line);border-bottom:0;padding:4px 4px calc(4px + env(safe-area-inset-bottom));box-shadow:0 -2px 10px rgba(0,0,0,.08)}
+nav button{display:flex;flex-direction:column;align-items:center;gap:1px;min-width:72px;font-size:11px;padding:5px 6px}nav button i{display:block;font-size:20px;line-height:1.1}
+input,select,textarea{font-size:16px}
+.row>label,.row>button{flex:1 1 140px}.row input:not([type=checkbox]),.row select{width:100%!important}
+.card{padding:12px}.two{grid-template-columns:1fr}
+.rt{display:block}.rt tr.h{display:none}.rt tbody,.rt tr{display:block}
+.rt tr{border:1px solid var(--line);border-radius:8px;margin-bottom:8px;padding:6px 4px;background:var(--card)}
+.rt td{display:flex;justify-content:space-between;align-items:center;gap:12px;border:0;padding:4px 8px;text-align:right}
+.rt td::before{content:attr(data-label);color:var(--mute);font-size:13px;font-weight:600;text-align:left;flex-shrink:0}
+.rt td:first-child{font-weight:700;text-align:left;justify-content:flex-start;font-size:16px}
+.rt td.act{justify-content:flex-end;flex-wrap:wrap}
+dialog{width:100%!important;max-width:100%!important;margin:auto 0 0;border-radius:14px 14px 0 0;max-height:92vh;overflow:auto;padding-bottom:calc(14px + env(safe-area-inset-bottom))}
+#toast{bottom:calc(84px + env(safe-area-inset-bottom));width:max-content;max-width:90%;text-align:center}
+.tw{margin:0 -4px}
+}
+@media(max-width:380px){nav button{min-width:64px}.grid{grid-template-columns:1fr 1fr}.stat b{font-size:22px}}
+@media print{header,nav,.np{display:none!important}body{background:#fff;color:#000}}
+</style></head><body>
+<header><h1>Acey's Resto Cafe</h1><span>Inventory notebook · works offline · data stays in this browser</span></header>
+<nav id="nav"></nav><main id="m"></main><div id="toast"></div>
+<dialog id="dlg"></dialog>
+<dialog id="img" style="max-width:820px"></dialog>
+<script>
+const K='aceys_inv_v1',$=s=>document.querySelector(s);
+const e=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const day=(d=new Date())=>d.toLocaleDateString('en-CA');
+const fdt=t=>new Date(t).toLocaleString('en-PH',{dateStyle:'medium',timeStyle:'short'});
+const num=v=>Math.round(parseFloat(v)*100)/100;
+function seed(){const L=[['Coffee beans','Beverage','kg',5,3,1],['Fresh milk','Beverage','L',20,10,4],['Sugar','Dry goods','kg',10,5,2],['Flour','Dry goods','kg',15,8,3],['Eggs','Fresh','tray',6,3,1],['Chicken','Fresh','kg',12,6,2],['Rice','Dry goods','kg',25,10,4],['Cooking oil','Dry goods','L',10,5,2],['Cups 12oz','Supplies','pcs',200,100,40],['Take-out boxes','Supplies','pcs',100,50,20]];
+return{items:L.map(r=>({id:uid(),name:r[0],cat:r[1],unit:r[2],qty:r[3],low:r[4],crit:r[5],notes:'',active:true})),moves:[],shifts:[],needs:[],staff:''}}
+let S;try{S=JSON.parse(localStorage.getItem(K))||seed()}catch(x){S=seed()}
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(x){toast('Could not save – browser storage is full or blocked.')}};
+function toast(t){const x=$('#toast');x.textContent=t;x.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>x.style.display='none',2600)}
+const st=i=>i.qty<=0?'Out':i.qty<=i.crit?'Critical':i.qty<=i.low?'Low':'Available';
+const tag=s=>`<span class="tag ${s}">${s==='Out'?'Out of stock':s}</span>`;
+const act=()=>S.items.filter(i=>i.active);
+const item=id=>S.items.find(i=>i.id==id);
+const cats=()=>[...new Set(S.items.map(i=>i.cat).filter(Boolean))].sort();
+const opts=(a,sel)=>a.map(([v,t])=>`<option value="${e(v)}"${v==sel?' selected':''}>${e(t)}</option>`).join('');
+const itemOpts=sel=>opts(act().sort((a,b)=>a.name.localeCompare(b.name)).map(i=>[i.id,`${i.name} (${i.qty} ${i.unit})`]),sel);
+function csv(rows){return rows.map(r=>r.map(c=>`"${String(c??'').replace(/"/g,'""')}"`).join(',')).join('\n')}
+function dl(name,txt,type='text/csv'){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type}));a.download=name;a.click()}
+function move(id,type,delta,note,by,newQty){const i=item(id);i.qty=newQty!==undefined?newQty:num(i.qty+delta);S.moves.unshift({id:uid(),ts:new Date().toISOString(),day:day(),itemId:id,name:i.name,unit:i.unit,type,delta:num(delta),after:i.qty,note:note||'',by:by||''})}
+
+let V='dash',F={q:'',cat:'',st:''},H={q:'',type:'',day:''},CM='open',RD=day(),PRE='';
+const TABS=[['dash','Today','🏠'],['inv','Inventory','📦'],['mov','Record','✏️'],['count','Counts','📋'],['needs','Needs','🛒'],['hist','History','🕘'],['rep','Reports','📤']];
+function go(v,x){V=v;if(x)CM=x;render();scrollTo(0,0)}
+function render(){$('#nav').innerHTML=TABS.map(([k,t,ic])=>`<button class="${k==V?'on':''}" onclick="go('${k}')"><i aria-hidden="true">${ic}</i>${t}</button>`).join('');$('#m').innerHTML=VIEWS[V]();if(V=='inv')drawInv();if(V=='hist')drawHist()}
+
+const VIEWS={
+dash(){const A=act(),c={Available:0,Low:0,Critical:0,Out:0};A.forEach(i=>c[st(i)]++);
+const td=day(),sh=S.shifts.filter(s=>s.day==td),o=sh.find(s=>s.type=='open'),cl=sh.find(s=>s.type=='close');
+const fl=A.filter(i=>st(i)!='Available').sort((a,b)=>a.qty-b.qty);
+return`<h2>Today, ${new Date().toLocaleDateString('en-PH',{dateStyle:'full'})}</h2>
+<div class="card"><b>Shift flow:</b> Opening count ${o?'✔ done '+new Date(o.ts).toLocaleTimeString('en-PH',{timeStyle:'short'}):'– not yet'} → Record stock during the day → Closing count ${cl?'✔ done':'– not yet'}
+<div class="row" style="margin:10px 0 0"><button class="b" onclick="go('count','open')">Opening count</button><button class="b s" onclick="go('mov')">Record stock</button><button class="b" onclick="go('count','close')">Closing count</button></div></div>
+<div class="grid">${['Available','Low','Critical','Out'].map(k=>`<div class="stat ${k}" onclick="F.st='${k}';go('inv')"><b>${c[k]}</b>${k=='Out'?'Out of stock':k}</div>`).join('')}</div>
+<h3>Items needing attention</h3><div class="card tw">${fl.length?`<table class="rt"><tr class="h"><th>Item</th><th class="n">Qty</th><th>Status</th><th></th></tr>${fl.map(i=>`<tr><td>${e(i.name)}</td><td class="n" data-label="Quantity">${i.qty} ${e(i.unit)}</td><td data-label="Status">${tag(st(i))}</td><td class="act"><button class="b sm s" onclick="go('needs')">Add to Needs</button></td></tr>`).join('')}</table>`:'<span class="mute">Everything is available.</span>'}</div>
+<div class="two"><div class="card"><b>Need to Buy</b>: ${S.needs.filter(n=>n.list=='buy'&&!n.done).length} open</div><div class="card"><b>Need to Restock</b>: ${S.needs.filter(n=>n.list=='restock'&&!n.done).length} open</div></div>`},
+
+inv(){return`<h2>Current inventory</h2><div class="row np"><label>Search<input id="fq" value="${e(F.q)}" oninput="F.q=this.value;drawInv()" placeholder="Item name"></label>
+<label>Category<select onchange="F.cat=this.value;drawInv()"><option value="">All</option>${opts(cats().map(c=>[c,c]),F.cat)}</select></label>
+<label>Status<select onchange="F.st=this.value;drawInv()"><option value="">All</option>${opts(['Available','Low','Critical','Out'].map(c=>[c,c]),F.st)}</select></label>
+<button class="b" onclick="editItem()">+ New item</button></div><div class="card tw" id="invb"></div>`},
+
+mov(){return`<h2>Record stock</h2><div class="card"><div class="row">
+<label>Item<select id="mi">${itemOpts(PRE)}</select></label>
+<label>What happened<select id="mt"><option value="add">Stock added (delivery / bought)</option><option value="out">Stock out (used, wasted, given)</option><option value="adjust">Adjustment (+ or −)</option></select></label>
+<label>Quantity<input id="mq" type="number" step="any" inputmode="decimal" style="width:110px"></label>
+<label>Recorded by<input id="mb" value="${e(S.staff)}" style="width:130px"></label>
+<label>Note<input id="mn" placeholder="Supplier, reason…"></label>
+<button class="b" onclick="saveMove()">Save</button></div><div class="mute">Adjustment: type a negative number to reduce (e.g. −2 for spoiled stock). Stock out never goes below zero.</div></div>
+<h3>Recent entries</h3><div class="card tw">${movTable(S.moves.slice(0,10))}</div>`},
+
+count(){const o=CM=='open',g={};act().forEach(i=>(g[i.cat||'Other']??=[]).push(i));
+return`<h2>${o?'Opening':'Closing'} count</h2><div class="row"><button class="b ${o?'':'s'}" onclick="CM='open';render()">Opening</button><button class="b ${o?'s':''}" onclick="CM='close';render()">Closing</button></div>
+<div class="card"><div class="row"><label>Counted by<input id="cb" value="${e(S.staff)}"></label><label>Shift note<input id="cn" style="width:260px"></label></div>
+<div class="mute">Type the quantity you physically counted. Leave blank to keep the current number.</div>
+<div class="tw"><table>${Object.keys(g).sort().map(c=>`<tr><th colspan="3">${e(c)}</th></tr>`+g[c].map(i=>`<tr><td>${e(i.name)}</td><td class="mute">now ${i.qty} ${e(i.unit)}</td><td class="n"><input class="ci" data-id="${i.id}" type="number" step="any" min="0" style="width:110px;text-align:right" inputmode="decimal" placeholder="${i.qty}"></td></tr>`).join('')).join('')}</table></div>
+<div class="row" style="margin-top:10px"><button class="b" onclick="saveCount()">Save ${o?'opening':'closing'} count</button></div></div>
+<h3>Compare opening, additions and closing</h3>
+<div class="row"><label>Date<input type="date" value="${RD}" onchange="RD=this.value;render()"></label></div><div class="card tw">${compare(RD)}</div>`},
+
+needs(){const fl=act().filter(i=>st(i)!='Available');
+const L=(k,t)=>{const a=S.needs.filter(n=>n.list==k);return`<div class="card"><h3 style="margin-top:0">${t}</h3>${a.length?a.map(n=>`<div class="row" style="align-items:center;margin-bottom:4px"><input type="checkbox" ${n.done?'checked':''} onchange="tog('${n.id}')"><span class="${n.done?'done':''}" style="flex:1">${e(n.name)}${n.qty?` – ${e(n.qty)}`:''}${n.note?` <span class="mute">(${e(n.note)})</span>`:''}</span><button class="b d sm" onclick="delNeed('${n.id}')">Remove</button></div>`).join('')+`<button class="b s sm" onclick="S.needs=S.needs.filter(n=>n.list!='${k}'||!n.done);save();render()">Clear checked</button>`:'<span class="mute">Nothing listed.</span>'}</div>`};
+return`<h2>Needs</h2><div class="card"><b>Flagged items</b> <span class="mute">(Low, Critical or Out)</span>
+${fl.length?`<table class="rt">${fl.map(i=>`<tr><td>${e(i.name)}</td><td data-label="Quantity">${i.qty} ${e(i.unit)}</td><td data-label="Status">${tag(st(i))}</td><td class="act"><button class="b sm" onclick="addNeed('buy','${i.id}')">Need to Buy</button> <button class="b sm s" onclick="addNeed('restock','${i.id}')">Need to Restock</button></td></tr>`).join('')}</table>`:'<div class="mute">No flagged items.</div>'}
+<div class="row" style="margin-top:12px"><label>Other item<input id="nn" placeholder="e.g. Dish soap"></label><label>Qty<input id="nq" style="width:90px"></label><label>List<select id="nl"><option value="buy">Need to Buy</option><option value="restock">Need to Restock</option></select></label><button class="b" onclick="addNeed($('#nl').value,'',$('#nn').value,$('#nq').value)">Add</button></div></div>
+<div class="two">${L('buy','Need to Buy')}${L('restock','Need to Restock')}</div>
+<div class="mute">Buy = must be purchased. Restock = already in storage, move to the counter/kitchen.</div>`},
+
+hist(){return`<h2>History</h2><div class="row"><label>Search<input value="${e(H.q)}" oninput="H.q=this.value;drawHist()"></label><label>Type<select onchange="H.type=this.value;drawHist()"><option value="">All</option>${opts([['add','Added'],['out','Stock out'],['adjust','Adjustment'],['open','Opening'],['close','Closing']],H.type)}</select></label><label>Date<input type="date" value="${H.day}" onchange="H.day=this.value;drawHist()"></label></div>
+<div class="card tw" id="hm"></div><h3>Opening / closing shifts</h3><div id="hs"></div>`},
+
+rep(){const t=reportText(RD);return`<h2>Reports & backup</h2><div class="card"><div class="row"><label>Report date<input type="date" value="${RD}" onchange="RD=this.value;render()"></label><button class="b" onclick="navigator.clipboard.writeText($('#rt').textContent).then(()=>toast('Copied – paste into Messenger'))">Copy for Messenger</button><button class="b s" onclick="print()">Print / Save as PDF</button><button class="b" onclick="showImg('Inventory report – '+RD,reportLines(RD))">Preview as image</button><button class="b s" onclick="showImg('Stock snapshot – '+day(),invLines())">Stock snapshot image</button></div><pre id="rt">${e(t)}</pre></div>
+<div class="card"><h3 style="margin-top:0">Export</h3><div class="mute">CSV opens in Excel, Google Sheets and phones. Excel (.xls) keeps column widths and colors.</div><div class="row" style="margin-top:8px"><b style="width:70px">CSV</b><button class="b s" onclick="exp('inv')">Inventory</button><button class="b s" onclick="exp('mov')">Movements</button><button class="b s" onclick="exp('shift')">Shift counts</button><button class="b s" onclick="exp('needs')">Needs lists</button></div><div class="row"><b style="width:70px">Excel</b><button class="b s" onclick="xls('inv')">Inventory</button><button class="b s" onclick="xls('mov')">Movements</button><button class="b s" onclick="xls('shift')">Shift counts</button><button class="b s" onclick="xls('needs')">Needs lists</button></div><div class="row"><b style="width:70px">Other</b><button class="b s" onclick="dl('report-'+RD+'.txt',reportText(RD),'text/plain')">Report (.txt)</button><button class="b s" onclick="showImg('Inventory report – '+RD,reportLines(RD))">Report (.png)</button><button class="b s" onclick="showImg('Stock snapshot – '+day(),invLines())">Snapshot (.png)</button></div></div>
+<div class="card"><h3 style="margin-top:0">Backup & restore</h3><div class="row"><button class="b" onclick="dl('aceys-inventory-backup-'+day()+'.json',JSON.stringify(S),'application/json')">Download backup</button><label>Restore from backup<input type="file" accept=".json" onchange="restore(this.files[0])"></label><button class="b d" onclick="if(confirm('Delete ALL data and start fresh? Download a backup first.')){S=seed();save();render()}">Reset everything</button></div><div class="mute">Data lives only in this browser. Download a backup regularly, especially before clearing browser data.</div></div>`}};
+
+function drawInv(){const q=F.q.toLowerCase(),a=S.items.filter(i=>(!q||i.name.toLowerCase().includes(q))&&(!F.cat||i.cat==F.cat)&&(!F.st||(i.active&&st(i)==F.st))).sort((a,b)=>a.name.localeCompare(b.name));
+$('#invb').innerHTML=a.length?`<table class="rt"><tr class="h"><th>Item</th><th>Category</th><th class="n">Qty</th><th>Status</th><th class="n">Low / Critical at</th><th></th></tr>${a.map(i=>`<tr style="${i.active?'':'opacity:.5'}"><td>${e(i.name)}${i.active?'':' (hidden)'}<div class="mute">${e(i.notes)}</div></td><td data-label="Category">${e(i.cat)}</td><td class="n" data-label="Quantity">${i.qty} ${e(i.unit)}</td><td data-label="Status">${i.active?tag(st(i)):'–'}</td><td class="n" data-label="Low / Critical at">${i.low} / ${i.crit}</td><td class="act"><button class="b sm" onclick="PRE='${i.id}';go('mov')">Record</button> <button class="b sm s" onclick="editItem('${i.id}')">Edit</button></td></tr>`).join('')}</table>`:'<span class="mute">No items match. Clear the filters or add a new item.</span>'}
+function movTable(a){return a.length?`<table class="rt"><tr class="h"><th>When</th><th>Item</th><th>Type</th><th class="n">Change</th><th class="n">After</th><th>Note</th></tr>${a.map(m=>`<tr><td>${e(m.name)}</td><td data-label="When">${fdt(m.ts)}</td><td data-label="Type">${{add:'Added',out:'Stock out',adjust:'Adjustment',open:'Opening count',close:'Closing count'}[m.type]}</td><td class="n" data-label="Change">${m.delta>0?'+':''}${m.delta} ${e(m.unit)}</td><td class="n" data-label="After">${m.after}</td><td data-label="Note">${e(m.note)} <span class="mute">${e(m.by)}</span></td></tr>`).join('')}</table>`:'<span class="mute">No entries yet.</span>'}
+function drawHist(){const q=H.q.toLowerCase(),a=S.moves.filter(m=>(!q||(m.name+m.note+m.by).toLowerCase().includes(q))&&(!H.type||m.type==H.type)&&(!H.day||m.day==H.day));
+$('#hm').innerHTML=movTable(a.slice(0,300))+(a.length>300?`<div class="mute">Showing latest 300 of ${a.length}. Export CSV for all.</div>`:'');
+$('#hs').innerHTML=S.shifts.length?S.shifts.map(s=>`<details class="card"><summary><b>${s.type=='open'?'Opening':'Closing'}</b> – ${fdt(s.ts)} ${s.by?'by '+e(s.by):''} ${s.note?'· '+e(s.note):''}</summary><table>${Object.entries(s.counts).map(([id,q])=>`<tr><td>${e(item(id)?.name||'(deleted)')}</td><td class="n">${q} ${e(item(id)?.unit||'')}</td></tr>`).join('')}</table></details>`).join(''):'<span class="mute">No shifts recorded.</span>'}
+
+function saveMove(){const id=$('#mi').value,t=$('#mt').value,q=num($('#mq').value),by=$('#mb').value.trim();
+if(!id||isNaN(q)||q===0)return toast('Enter a quantity that is not zero.');
+if(t!='adjust'&&q<0)return toast('Use a positive quantity, or choose Adjustment for negatives.');
+const i=item(id);let d=t=='out'?-q:q;if(t=='out'&&q>i.qty){if(!confirm(`Only ${i.qty} ${i.unit} on record. Set to 0?`))return;d=-i.qty}
+if(t=='adjust'&&i.qty+d<0)return toast('Adjustment would go below zero.');
+S.staff=by;move(id,t,d,$('#mn').value.trim(),by);save();PRE=id;toast('Saved: '+i.name+' is now '+i.qty+' '+i.unit);render()}
+function saveCount(){const by=$('#cb').value.trim(),inp=[...document.querySelectorAll('.ci')],bad=inp.find(x=>x.value!==''&&(isNaN(x.value)||x.value<0));
+if(bad)return toast('Counts must be zero or more.');
+S.staff=by;const counts={};inp.forEach(x=>{const i=item(x.dataset.id);if(x.value!==''){const c=num(x.value);move(i.id,CM,c-i.qty,CM=='open'?'Opening count':'Closing count',by,c)}counts[i.id]=i.qty});
+S.shifts.unshift({id:uid(),type:CM,ts:new Date().toISOString(),day:day(),by,note:$('#cn').value.trim(),counts});save();RD=day();
+if(CM=='close'){toast('Closing saved. Review the Needs list.');go('needs')}else{toast('Opening count saved.');go('dash')}}
+function compare(d){const O=S.shifts.find(s=>s.day==d&&s.type=='open'),C=S.shifts.find(s=>s.day==d&&s.type=='close');
+if(!O&&!C)return'<span class="mute">No opening or closing count saved for this date.</span>';
+const m=S.moves.filter(x=>x.day==d),sum=(id,t)=>m.filter(x=>x.itemId==id&&x.type==t).reduce((a,x)=>a+x.delta,0);
+const rows=act().map(i=>{const o=O?.counts[i.id],c=C?.counts[i.id],a=sum(i.id,'add'),u=-sum(i.id,'out'),j=sum(i.id,'adjust');const ex=o==null?null:num(o+a-u+j),v=ex==null||c==null?null:num(c-ex);return{i,o,a,u,j,c,ex,v}}).filter(r=>r.o!=null||r.c!=null||r.a||r.u||r.j);
+return`<table><tr><th>Item</th><th class="n">Opening</th><th class="n">Added</th><th class="n">Used</th><th class="n">Adj.</th><th class="n">Expected close</th><th class="n">Actual close</th><th class="n">Difference</th></tr>${rows.map(r=>`<tr><td>${e(r.i.name)}</td><td class="n">${r.o??'–'}</td><td class="n">${r.a||''}</td><td class="n">${r.u||''}</td><td class="n">${r.j||''}</td><td class="n">${r.ex??'–'}</td><td class="n">${r.c??'–'}</td><td class="n ${r.v?'bad':''}">${r.v==null?'–':(r.v>0?'+':'')+r.v}</td></tr>`).join('')}</table><div class="mute">Difference = actual closing − (opening + added − used + adjustments). A non-zero value means stock is unaccounted for (or an entry is missing).</div>`}
+function addNeed(list,id,name,qty){const i=id?item(id):null;name=i?i.name:(name||'').trim();if(!name)return toast('Enter an item name.');
+if(S.needs.some(n=>n.list==list&&!n.done&&n.name.toLowerCase()==name.toLowerCase()))return toast('Already on that list.');
+S.needs.push({id:uid(),list,name,qty:i?'':qty,note:i?`${i.qty} ${i.unit} left – ${st(i)}`:'',done:false,ts:new Date().toISOString()});save();render()}
+function tog(id){const n=S.needs.find(n=>n.id==id);n.done=!n.done;save();render()}
+function delNeed(id){S.needs=S.needs.filter(n=>n.id!=id);save();render()}
+function editItem(id){const i=id?item(id):{name:'',cat:'',unit:'pcs',qty:0,low:5,crit:2,notes:'',active:true},d=$('#dlg');
+d.innerHTML=`<h3 style="margin-top:0">${id?'Edit':'New'} item</h3><div style="display:grid;gap:8px"><label>Name<input id="en" value="${e(i.name)}"></label><label>Category<input id="ec" list="cl" value="${e(i.cat)}"><datalist id="cl">${cats().map(c=>`<option>${e(c)}`).join('')}</datalist></label><label>Unit (kg, pcs, L…)<input id="eu" value="${e(i.unit)}"></label>${id?'':`<label>Starting quantity<input id="eq" type="number" step="any" value="0"></label>`}<label>Low when quantity is at or below<input id="el" type="number" step="any" value="${i.low}"></label><label>Critical when at or below<input id="ek" type="number" step="any" value="${i.crit}"></label><label>Notes<input id="eo" value="${e(i.notes)}"></label>${id?`<label style="flex-direction:row;align-items:center;gap:8px"><input type="checkbox" id="ea" ${i.active?'checked':''}> Active (uncheck to hide from counts)</label>`:''}</div>
+<div class="row" style="margin-top:12px"><button class="b" onclick="saveItem('${id||''}')">Save</button><button class="b s" onclick="$('#dlg').close()">Cancel</button>${id?`<button class="b d" onclick="delItem('${id}')">Delete</button>`:''}</div>`;d.showModal()}
+function saveItem(id){const n=$('#en').value.trim(),u=$('#eu').value.trim();if(!n||!u)return toast('Name and unit are required.');
+const l=num($('#el').value),k=num($('#ek').value);if(isNaN(l)||isNaN(k)||k>l)return toast('Critical level must be at or below the Low level.');
+if(S.items.some(x=>x.id!=id&&x.name.toLowerCase()==n.toLowerCase()))return toast('An item with that name already exists.');
+const f={name:n,cat:$('#ec').value.trim(),unit:u,low:l,crit:k,notes:$('#eo').value.trim()};
+if(id)Object.assign(item(id),f,{active:$('#ea').checked});else{const q=num($('#eq').value)||0;S.items.push({id:uid(),...f,qty:0,active:true});if(q>0)move(S.items.at(-1).id,'add',q,'Starting quantity')}
+save();$('#dlg').close();render()}
+function delItem(id){if(!confirm('Delete this item? History keeps its name. Consider hiding it instead.'))return;S.items=S.items.filter(i=>i.id!=id);save();$('#dlg').close();render()}
+function reportText(d){const A=act(),g=s=>A.filter(i=>st(i)==s).map(i=>`- ${i.name}: ${i.qty} ${i.unit}`),sec=(t,a)=>a.length?`\n${t}\n${a.join('\n')}\n`:'';
+const nd=k=>S.needs.filter(n=>n.list==k&&!n.done).map(n=>`- ${n.name}${n.qty?' ('+n.qty+')':''}`),O=S.shifts.find(s=>s.day==d&&s.type=='open'),C=S.shifts.find(s=>s.day==d&&s.type=='close');
+const m=S.moves.filter(x=>x.day==d&&(x.type=='add'||x.type=='out'));
+return`ACEY'S RESTO CAFE – INVENTORY REPORT\nDate: ${d}\nOpening count: ${O?'done by '+(O.by||'n/a'):'not recorded'}\nClosing count: ${C?'done by '+(C.by||'n/a'):'not recorded'}\n`
++sec('OUT OF STOCK',g('Out'))+sec('CRITICAL',g('Critical'))+sec('LOW',g('Low'))
++sec('STOCK ADDED TODAY',m.filter(x=>x.type=='add').map(x=>`- ${x.name}: +${x.delta} ${x.unit}`))+sec('STOCK USED TODAY',m.filter(x=>x.type=='out').map(x=>`- ${x.name}: ${-x.delta} ${x.unit}`))
++sec('NEED TO BUY',nd('buy'))+sec('NEED TO RESTOCK',nd('restock'))+`\nItems available: ${g('Available').length} of ${A.length}`}
+function exp(k){const D=day();
+if(k=='inv')dl(`inventory-${D}.csv`,csv([['Item','Category','Unit','Qty','Status','Low at','Critical at','Notes'],...S.items.map(i=>[i.name,i.cat,i.unit,i.qty,st(i),i.low,i.crit,i.notes])]));
+if(k=='mov')dl(`movements-${D}.csv`,csv([['Date/Time','Item','Type','Change','After','Unit','Note','By'],...S.moves.map(m=>[m.ts,m.name,m.type,m.delta,m.after,m.unit,m.note,m.by])]));
+if(k=='shift')dl(`shift-counts-${D}.csv`,csv([['Date/Time','Shift','By','Item','Counted'],...S.shifts.flatMap(s=>Object.entries(s.counts).map(([id,q])=>[s.ts,s.type,s.by,item(id)?.name||id,q]))]));
+if(k=='needs')dl(`needs-${D}.csv`,csv([['List','Item','Qty','Note','Done'],...S.needs.map(n=>[n.list,n.name,n.qty,n.note,n.done?'yes':'no'])]))}
+function restore(f){if(!f)return;const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);if(!x.items||!x.moves||!x.shifts||!x.needs)throw 0;if(!confirm('Replace all current data with this backup?'))return;S=x;save();toast('Backup restored.');render()}catch(_){toast('That file is not a valid Acey backup.')}};r.readAsText(f)}
+function tables(k){const D=day();
+if(k=='inv')return[`inventory-${D}`,[['Item','Category','Unit','Qty','Status','Low at','Critical at','Notes'],...S.items.map(i=>[i.name,i.cat,i.unit,i.qty,st(i),i.low,i.crit,i.notes])]];
+if(k=='mov')return[`movements-${D}`,[['Date/Time','Item','Type','Change','After','Unit','Note','By'],...S.moves.map(m=>[fdt(m.ts),m.name,m.type,m.delta,m.after,m.unit,m.note,m.by])]];
+if(k=='shift')return[`shift-counts-${D}`,[['Date/Time','Shift','By','Item','Counted'],...S.shifts.flatMap(s=>Object.entries(s.counts).map(([id,q])=>[fdt(s.ts),s.type,s.by,item(id)?.name||id,q]))]];
+return[`needs-${D}`,[['List','Item','Qty','Note','Done'],...S.needs.map(n=>[n.list,n.name,n.qty,n.note,n.done?'yes':'no'])]]}
+function xls(k){const[n,r]=tables(k),C={Out:'#fde2e0',Critical:'#fde6d8',Low:'#fff0cf'};
+const h=`<html><head><meta charset="utf-8"></head><body><table border="1" style="border-collapse:collapse">${r.map((row,i)=>`<tr>${row.map(c=>i?`<td${C[c]?` style="background:${C[c]}"`:''}>${e(c)}</td>`:`<th style="background:#17483a;color:#fff">${e(c)}</th>`).join('')}</tr>`).join('')}</table></body></html>`;
+dl(n+'.xls',h,'application/vnd.ms-excel')}
+const SC={Out:'#b42318',Critical:'#c2410c',Low:'#a86a00',Available:'#2b7a4b',G:'#17483a'};
+function reportLines(d){const A=act(),L=[],O=S.shifts.find(s=>s.day==d&&s.type=='open'),C=S.shifts.find(s=>s.day==d&&s.type=='close');
+const sec=(t,rows,c)=>{if(!rows.length)return;L.push({t:'',gap:0},{t,b:1,c});rows.forEach(r=>L.push(r))};
+const it=s=>A.filter(i=>st(i)==s).map(i=>({t:'  '+i.name,r:i.qty+' '+i.unit}));
+L.push({t:'Opening count: '+(O?'done by '+(O.by||'n/a'):'not recorded')},{t:'Closing count: '+(C?'done by '+(C.by||'n/a'):'not recorded')});
+sec('Out of stock',it('Out'),SC.Out);sec('Critical',it('Critical'),SC.Critical);sec('Low',it('Low'),SC.Low);
+const m=S.moves.filter(x=>x.day==d);
+sec('Stock added',m.filter(x=>x.type=='add').map(x=>({t:'  '+x.name,r:'+'+x.delta+' '+x.unit})),SC.G);
+sec('Stock used',m.filter(x=>x.type=='out').map(x=>({t:'  '+x.name,r:-x.delta+' '+x.unit})),SC.G);
+const nd=k=>S.needs.filter(n=>n.list==k&&!n.done).map(n=>({t:'  '+n.name,r:n.qty||''}));
+sec('Need to buy',nd('buy'),SC.G);sec('Need to restock',nd('restock'),SC.G);
+L.push({t:'',gap:0},{t:`Available: ${it('Available').length} of ${A.length} items`,c:SC.Available});return L}
+function invLines(){const o={Out:0,Critical:1,Low:2,Available:3};return act().sort((a,b)=>o[st(a)]-o[st(b)]||a.name.localeCompare(b.name)).map(i=>({t:i.name,r:`${i.qty} ${i.unit}  ·  ${st(i)==='Out'?'Out of stock':st(i)}`,c:SC[st(i)]}))}
+let IMGC,IMGN='';
+function showImg(title,lines){const W=760,P=32,LH=26,hd=70,H=hd+P*2+lines.length*LH,c=document.createElement('canvas');c.width=W*2;c.height=H*2;const x=c.getContext('2d');x.scale(2,2);
+x.fillStyle='#fff';x.fillRect(0,0,W,H);x.fillStyle='#17483a';x.fillRect(0,0,W,hd-6);x.fillStyle='#fff';x.font='bold 22px Georgia,serif';x.fillText("Acey's Resto Cafe",P,32);x.font='14px "Trebuchet MS",sans-serif';x.fillText(title,P,54);
+let y=hd+P-6;lines.forEach((l,i)=>{if(i%2&&!l.b&&l.r){x.fillStyle='#f4f6f3';x.fillRect(P-8,y-18,W-P*2+16,LH)}x.font=(l.b?'bold ':'')+'16px "Trebuchet MS",sans-serif';x.fillStyle=l.c||'#1c2a25';x.textAlign='left';x.fillText(l.t,P,y);if(l.r){x.textAlign='right';x.fillText(l.r,W-P,y)}y+=LH});
+IMGC=c;IMGN=title.replace(/[^\w-]+/g,'-').toLowerCase();
+$('#img').innerHTML=`<h3 style="margin-top:0">Image preview</h3><div style="max-height:65vh;overflow:auto;border:1px solid var(--line)"><img src="${c.toDataURL('image/png')}" style="width:100%;display:block" alt="${e(title)}"></div><div class="row" style="margin-top:12px"><button class="b" onclick="dlImg()">Download PNG</button><button class="b s" onclick="copyImg()">Copy image</button><button class="b s" onclick="$('#img').close()">Close</button></div><div class="mute">Send the PNG or paste the copied image into Messenger.</div>`;$('#img').showModal()}
+function dlImg(){IMGC.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=IMGN+'.png';a.click()})}
+function copyImg(){IMGC.toBlob(async b=>{try{await navigator.clipboard.write([new ClipboardItem({'image/png':b})]);toast('Image copied')}catch(_){toast('Copy not supported here – use Download PNG.')}})}
+render();
+</script></body></html>
